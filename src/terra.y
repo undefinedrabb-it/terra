@@ -1,21 +1,25 @@
-%{
-    #include <stdio.h>
-    #include <terra.h>
+%{ 
+    #include "index.h"
     int yylex();
 %}
+
 %union{
     int number;
 };
-%token <number> NUMBER
 
-%token ADD SUB MUL
+%token <number> NUMBER // 
 
-%token SEMI
+%token ADD SUB MUL // operator
 
+%token SEMI // kinda EOL token
+
+// set priority of opeartor lower greater
 %left ADD SUB
 %left MUL DIV
 
-%type <number> exp
+%type <number> exp // 
+
+%start program  // start rule
 
 %%
 

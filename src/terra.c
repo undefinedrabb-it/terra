@@ -1,6 +1,4 @@
-#include "terra.h"
-#include <stdio.h>
-#include <varargs.h>
+#include "index.h"
 
 extern FILE *yyin;
 int yylex();

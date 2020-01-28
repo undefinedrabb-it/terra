@@ -1,10 +1,7 @@
-%{ 
-	#include "terra.tab.h"
-    #include <terra.h>
-
-	// void yyerror();
-
-
+%option noyywrap nodefault yylineno
+%{
+#include "terra.tab.h"
+#include "index.h"
     // "let" {	printf("LET ");	}
     // "if" {	printf("IF ");	}
     // "while" {	printf("WHILE ");	}
@@ -49,14 +46,14 @@ DIGIT [0-9]
 "*" { return MUL;   }
 "/" { return DIV;   }
 
-{DIGIT}+ { yylval.number = atoi(yytext); return NUMBER;	}
+[1-9]{DIGIT}* { yylval.number = atoi(yytext); return NUMBER;	}
 
 ";" { return SEMI;  }
-"\n" {lineno += 1;}
+"\n" {yylineno += 1;}
 
 [ \t] {}
 
-.          yyerror("Unknown character");
+.         { yyerror("Unknown character %d",yylineno);}
 
 %% 
 
