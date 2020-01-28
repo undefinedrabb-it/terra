@@ -1,83 +1,25 @@
-# Terra - JS subset interpreter
 
-##  Modules
-- ###  CORE:
-	1. opis:
-		* głowny moduł
-	2. struct:
-	```c
+# Terra
+## Wprowadzenie
+Terra to interpreter podzbioru jezyka JavaScript napisany w języku C z pomocą flex'a i bison'a.
+## Moduły
+- ### LEXER
+	Moduł realizujący podział danego tekstu na tokeny, które bedą dzielone na kolejne fragmenty składowe programu. W tym module będzie również pierwsza validacja danych - sprawdzenie czy użytkownik użył jedynie poprawnych znaków. Moduł będzie zrealizowany za pomocą generatora flex.
 	
-	// now idonno possible can be
-	
-- ### LEXER:
-	1. opis:
-	   * zamienia src code na słowa
-	2. struct:
-	```c
-	struct lexerList {
-		lexerToken token;
-		char* value; // or sds type
-		lexerList* next;
-	} lexerList;
-	
- - ### PARSER:
-	 1. opis:
-	    * łączy słowa w formuły atomowe  
-	 2. struct:
-	```c
-	struct lexerList {
-		lexerToken token;
-		char* value; // or sds type
-		lexerList* next;
-	} lexerList;
-	
-	struct parserTree {
-		parserToken type;
-		void** value; // (char * or sds) or parserTree
-		parserTree* next;
-	} parserTree;
-	
- - ### COMPILER:
-	1. opis:
-	   * zmienia formuły atomowe w byte code
-	2. struct:
-	```c
-	struct parserTree {
-		parserToken type;
-		void** value; // (char * or sds) or parserTree
-		parserTree* next;
-	} parserTree;
-	
-	struct compilerList {
-		compilerToken type;
-		char* value; // or sds
-		compilerList* next;
-	} compilerList;
-	
- - ### INTERPRETER:
-	1. opis:
-	   * interpretuje byte code
-	2. struct:
-	```c
-	struct compilerList {
-		compilerToken type;
-		char* value; // or sds
-		compilerList* next;
-	} compilerList;
-	
-	struct runtime {
-		void* rip;
-		void* esp; 
-		void** memory;
-	} runtime;
+ - ### PARSER & INTERPRETER
+	 Moduł w interakcji z Lexer'em będzie tworzył AST (abstract syntax tree), które będzie poprawną gramatyką jezyka js. Będzie również sprawdzał czy użytkwonik używa poprawnej składni zadeklarownej w [BNF](https://pl.wikipedia.org/wiki/Notacja_BNF). Następnie redukuje i wyrażenia do oczekiwanego wyniku.
 
-## Dependency
-- [sds](https://github.com/antirez/sds) string lib
-- [greatest](https://github.com/silentbicycle/greatest) unit test lib ( możliwe że zmienię )
-
-## Uwagi
-prawdopobnie będę modyfikował struktury czy bibloiteki ale odnotuję co i dlaczego zmieniam 
+## Struktury danych
+- AST (drzewo syntaktyczne) - drzewo, które powstaje w wyniku statycznej analizy, uczestniczy w procesie interpretacji kodu,
+- symbol table (tablica z haszowaniem) - służy asocjacji identyfikatora z kodem programu.
+## Interakcja
+Programu będzie można użyć poprzez wpisanie komendy do terminala:
+```bash
+./terra nazwaProgramu 
+```
+## Zależności
+- [flex](https://github.com/westes/flex) generator lexer'ów,
+- [gnu bison](https://www.gnu.org/software/bison/) generator parser'ów.
 
 ## Github
 - [repo](https://github.com/jjzajac/terra)
-

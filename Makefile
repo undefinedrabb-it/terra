@@ -1,39 +1,22 @@
-CC = gcc 
-FLAG = -std=c11 -Wall -Wextra -pedantic -Wfloat-equal -Winit-self -Wuninitialized $(DEBUG) 
-DEBUG = -g3
-OPTMIZE = -O3
-SANITIZE = -fsanitize=leak -fno-common -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined -fstack-protector-all
-
-BUILD = build/
-OUT = $(BUILD)out/
-OBJ = $(BUILD)obj/
+CC = gcc
+FLEX = lex
+YYAC = bison
 
 SRC = src/
-LEXER = $(SRC)lexer/
-DEP = dependency/
-SDS = $(DEP)sds/
+BUILD = build/
+OBJ = $(BUILD)obj/
+OUT = $(BUILD)out/
 
+all: cc
 
+lexer: $(SRC)terra.l
+	$(FLEX) -I -o $(OBJ)lex.yy.c  $(SRC)terra.l 
 
-all:  main.o
+parser: $(SRC)terra.y
+	$(YYAC) -d -o $(OBJ)terra.tab.c $(SRC)terra.y
 
-main.o: sds.o lexer.o lexerList.o $(SRC)main.c $(SRC)index.h
-	$(CC) $(OBJ)sds.o $(OBJ)lexer.o $(OBJ)lexerList.o $(SRC)main.c -o $(OUT)terra $(FLAG) $(SANITIZE)
+cc: parser lexer
+	$(CC) $(SRC)terra.c $(OBJ)lex.yy.c $(OBJ)terra.tab.c -o $(OUT)terra -lfl
 
-# LEXER
-
-lexer.o: $(LEXER)lexer.c $(SRC)index.h $(LEXER)lexer.h 
-	$(CC) $(LEXER)lexer.c -c -o $(OBJ)lexer.o $(FLAG) $(SANITIZE)
-
-lexerList.o: $(LEXER)lexerList.c $(SRC)index.h $(LEXER)lexerList.h $(LEXER)lexer.h 
-	$(CC) $(LEXER)lexerList.c -c -o $(OBJ)lexerList.o $(FLAG) $(SANITIZE)
-
-# dependency
-
-sds.o: $(SDS)sds.c $(SDS)sdsalloc.h $(SDS)sds.h
-	$(CC) $(SDS)sds.c -c -o $(OBJ)sds.o
-	
-# utils
-
-clear:
-	rm -f build/obj/* build/out/*
+clean:
+	rm $(OBJ)* $(OUT)terra
