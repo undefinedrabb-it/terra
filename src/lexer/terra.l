@@ -4,19 +4,8 @@
     #include "index.h"
 
     // "let" {	printf("LET ");	}
-    // "if" {	printf("IF ");	}
     // "while" {	printf("WHILE ");	}
 
-    // "print" {printf("PRINT ");}
-
-    // ";" {	printf("SEMICOLON ");	}
-
-    // "==" {	printf("EQUAL_TO ");	}
-    // "<=" {	printf("LESS_THAN_OR_EQUAL_TO ");	}
-
-
-    // "{" {	printf("OPEN_CURRLY_BRACKET ");	}
-    // "}" {	printf("CLOSE_CURRLY_BRACKET ");	}
 
 // {ID} { yylval.s = atoi(yytext); return NAME;}
 %}
@@ -31,11 +20,19 @@ ID [a-zA-Z][a-zA-Z0-9]*
 "*" { return MUL;   }
 "/" { return DIV;   }
 
+"==" {	return EQUAL_TO;	}
+"<" {	return LESS_THAN;	}
+
+"if" {	return IF;	}
+
 "print" {   return BUILTIN_PRINT; }
+
 "("     {	return OPEN_BRACKET;	}
 ")"     {	return CLOSE_BRACKET;	}
+"{"     {	return OPEN_CURRLY_BRACKET;	}
+"}"     {	return CLOSE_CURRLY_BRACKET; }
 
-[1-9]{DIGIT}* { yylval.number = atoi(yytext); return NUMBER;	}
+{DIGIT}* { yylval.number = atoi(yytext); return NUMBER;	}
 
 
 ";" { return SEMI;  }

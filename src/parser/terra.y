@@ -14,24 +14,26 @@
 
 %token <number> NUMBER // 
 
-%token NAME
+%token ADD SUB MUL DIV// operator
+
+%token EQUAL_TO LESS_THAN // comperator
+
+%token IF // condition
 
 %token BUILTIN_PRINT // builtin func
 
-%token OPEN_BRACKET CLOSE_BRACKET // ( )
+%token OPEN_BRACKET CLOSE_BRACKET OPEN_CURRLY_BRACKET CLOSE_CURRLY_BRACKET // ( ) { }
 
-%token ADD SUB MUL // operator
-
-%token ASIGN
+%token ASIGN // =
 
 %token SEMI // kinda EOL token
 
 // set priority of opeartor lower greater
-%right ASIGN
+%right ASIGN EQUAL_TO LESS_THAN
 %left ADD SUB
 %left MUL DIV
 
-%type <node> exp stmt builtin// 
+%type <node> exp stmt builtin cmp listStmt ifStmt// 
 
 %start program  // start rule
 
@@ -43,15 +45,28 @@ program:
 
 stmt: exp
     | builtin
+    | ifStmt
+    ;
+
+listStmt: stmt
+    ;  
+
+ifStmt: IF OPEN_BRACKET cmp CLOSE_BRACKET OPEN_CURRLY_BRACKET listStmt CLOSE_CURRLY_BRACKET { $$ = createASTFlow(toFlowToken("if"),$3, $6, NULL); }
+    ;
+
+cmp: exp
+    | exp EQUAL_TO exp   { $$ = createASTCmp(toCmpToken("=="),$1, $3);}
+    | exp LESS_THAN exp { $$ = createASTCmp(toCmpToken("<"),$1, $3);}
     ;
 
 builtin: BUILTIN_PRINT OPEN_BRACKET exp CLOSE_BRACKET { $$ = createASTBuiltin(toBuiltin("print"),$3); }
     ;
 
 exp: NUMBER       { $$ = createASTIntConst($1); }
-    | exp ADD exp { $$ = createAST(toTypeToken('+'),$1,$3); }
-    | exp SUB exp { $$ = createAST(toTypeToken('-'),$1,$3); }
-    | exp MUL exp { $$ = createAST(toTypeToken('*'),$1,$3); }
+    | exp ADD exp { $$ = createAST(toTypeToken('+'),$1, $3); }
+    | exp SUB exp { $$ = createAST(toTypeToken('-'),$1, $3); }
+    | exp MUL exp { $$ = createAST(toTypeToken('*'),$1, $3); }
+    | exp DIV exp { $$ = createAST(toTypeToken('/'),$1, $3); }
     ;
 
 %%

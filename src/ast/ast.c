@@ -10,6 +10,8 @@ typeToken toTypeToken(int value)
         return Sub;
     case '*':
         return Mul;
+    case '/':
+        return Div;
     default:
         // TODO handle error
         yyerror("unknown token %c", value);
@@ -28,6 +30,30 @@ builtin toBuiltin(char *name)
     }
 }
 
+cmpToken toCmpToken(char *name)
+{
+    if (strcmp(name, "==") == 0)
+        return Equal;
+    if (strcmp(name, "<") == 0)
+        return Less;
+    else
+    {
+        // TODO handle error
+        yyerror("unknown comparator %s", name);
+    }
+}
+
+flowToken toFlowToken(char *name)
+{
+    if (strcmp(name, "if") == 0)
+        return If;
+    else
+    {
+        // TODO handle error
+        yyerror("unknown flow func %s", name);
+    }
+}
+
 astNode *createAST(typeToken type, astNode *left, astNode *right)
 {
     astNode *node = (astNode *)malloc(sizeof(astNode));
@@ -39,6 +65,20 @@ astNode *createAST(typeToken type, astNode *left, astNode *right)
     node->right = right;
 
     return node;
+}
+
+astNode *createASTCmp(cmpToken type, astNode *left, astNode *right)
+{
+    astCmp *node = (astCmp *)malloc(sizeof(astCmp));
+
+    // TODO check if node is create
+
+    node->nodeType = Cmp;
+    node->cmpType = type;
+    node->left = left;
+    node->right = right;
+
+    return (astNode *)node;
 }
 
 astNode *createASTIntConst(int value)
@@ -53,6 +93,21 @@ astNode *createASTIntConst(int value)
     return (astNode *)node;
 }
 
+astNode *createASTFlow(flowToken type, astNode *cond, astNode *body, astNode *optional)
+{
+    astFlow *node = (astFlow *)malloc(sizeof(astFlow));
+
+    // TODO check if node is create
+
+    node->nodeType = Flow;
+    node->flowType = type;
+    node->cond = cond;
+    node->body = body;
+    node->optional = optional;
+
+    return (astNode *)node;
+}
+
 astNode *createASTBuiltin(builtin builtinToken, astNode *left)
 {
     astBuiltin *node = (astBuiltin *)malloc(sizeof(astBuiltin));
@@ -60,8 +115,8 @@ astNode *createASTBuiltin(builtin builtinToken, astNode *left)
     // TODO check if node is create
 
     node->nodeType = Builtin;
-    node->left = left;
     node->builtinToken = builtinToken;
+    node->left = left;
 
     return (astNode *)node;
 }
@@ -79,7 +134,25 @@ int callBuiltin(astNode *node)
         yyerror("unknown builtin func %d", ((astBuiltin *)node)->builtinToken);
         break;
     }
+}
 
+int compare(astNode *node)
+{
+    int value;
+    switch (((astCmp *)node)->cmpType)
+    {
+    case Equal:
+        value = eval(((astCmp *)node)->left) == eval(((astCmp *)node)->right);
+        break;
+    case Less:
+        value = eval(((astCmp *)node)->left) < eval(((astCmp *)node)->right);
+        break;
+
+    default:
+        yyerror("unknown comperator  %d", ((astCmp *)node)->cmpType);
+        break;
+    }
+    return value;
 }
 
 int eval(astNode *node)
@@ -104,10 +177,24 @@ int eval(astNode *node)
         break;
     case Builtin:
         value = callBuiltin(node);
+        break;
+    case Cmp:
+        value = compare(node);
+        break;
+    case Flow:
+        if (eval(((astFlow *)node)->cond))
+        {
+            eval(((astFlow *)node)->body);
+        }
+        else if (((astFlow *)node)->optional != NULL)
+        {
+            eval(((astFlow *)node)->optional);
+        }
+        break;
     case Constant:
         value = ((astIntConst *)node)->value;
         break;
-        
+
     default:
         yyerror("not define node %d", node->nodeType);
         break;
@@ -116,36 +203,47 @@ int eval(astNode *node)
     return value;
 }
 
-void deleteAST(astNode *node)
+astNode *deleteAST(astNode *node)
 {
-    switch (node->nodeType)
-    {
-    case Add:
-    case Sub:
-    case Mul:
-    case Div:
+    if (node != NULL)
+        switch (node->nodeType)
+        {
+        case Add:
+        case Sub:
+        case Mul:
+        case Div:
 
-        deleteAST(node->left);
+        case Cmp:
 
-        deleteAST(node->right);
+            deleteAST(node->left);
 
-        break;
+            deleteAST(node->right);
 
-    case Builtin:
+            break;
 
-        deleteAST(node->left);
+        case Flow:
 
-        break;
+            deleteAST(((astFlow *)node)->cond);
+            deleteAST(((astFlow *)node)->body);
+            deleteAST(((astFlow *)node)->optional);
 
-    case Constant:
-        break;
+            break;
 
-    default:
-        // TODO handle error
-        yyerror("not define node %d", node->nodeType);
-        break;
-    }
+        case Builtin:
 
-    node = freeAndNullify(node);
+            deleteAST(node->left);
+
+            break;
+
+        case Constant:
+            break;
+
+        default:
+            // TODO handle error
+            yyerror("not define node %d", node->nodeType);
+            break;
+        }
+
+    return (astNode *)freeAndNullify(node);
     // TODO check if node is free
 }
