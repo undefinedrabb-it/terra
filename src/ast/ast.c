@@ -20,19 +20,25 @@ typeToken toTypeToken(int value)
 astNode *createAST(typeToken type, astNode *left, astNode *right)
 {
     astNode *node = (astNode *)malloc(sizeof(astNode));
+
     // TODO check if node is create
+
     node->nodeType = type;
     node->left = left;
     node->right = right;
+
     return node;
 }
 
 astNode *createIntConst(int value)
 {
     intConst *node = (intConst *)malloc(sizeof(intConst));
+
     // TODO check if node is create
+
     node->nodeType = Constant;
     node->value = value;
+
     return (astNode *)node;
 }
 
@@ -88,6 +94,8 @@ void deleteAST(astNode *node)
         yyerror("not define node %d", node->nodeType);
         break;
     }
+
     node = freeAndNullify(node);
     // TODO check if node is free
+    
 }

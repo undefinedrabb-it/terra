@@ -41,8 +41,11 @@ utils: header
 ast: header
 	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)ast.o $(AST)ast.c
 
-cc: parser lexer utils ast
-	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) $(CORE)terra.c $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o -o $(OUT)terra
+core: header
+	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)core.o $(CORE)terra.c
+
+cc: parser lexer utils ast core
+	$(CC) -Ibuild/obj -w -O3 $(SANITAZE) $(OBJ)core.o $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o -o $(OUT)terra
 
 clean:
 	rm $(OBJ)* $(OUT)terra $(GRAPH)*

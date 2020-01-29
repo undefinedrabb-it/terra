@@ -25,7 +25,7 @@
 %%
 
 program:
-    | program exp SEMI { printf("%d\n", eval($2)); }
+    | program exp SEMI { printf("%d\n", eval($2)); deleteAST($2); }
     ;
 
 exp: NUMBER       { $$ = createIntConst($1); }
