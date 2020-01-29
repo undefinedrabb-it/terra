@@ -10,7 +10,13 @@ typedef enum typeToken
     Sub,
     Mul,
     Div,
+    Builtin,
 } typeToken;
+
+typedef enum builtin
+{
+    print
+} builtin;
 
 typedef struct astNode
 {
@@ -19,16 +25,25 @@ typedef struct astNode
     struct astNode *right;
 } astNode;
 
-typedef struct intConst
+typedef struct astBuiltin
+{
+    typeToken nodeType;
+    struct astNode *left;
+    builtin builtinToken;
+
+} astBuiltin;
+
+typedef struct astIntConst
 {
     typeToken nodeType;
     int value;
-} intConst;
+} astIntConst;
 
 typeToken toTypeToken(int value);
 
-astNode *createAST(typeToken token, astNode *left, astNode *right);
-astNode *createIntConst(int value);
+astNode *createAST(typeToken type, astNode *left, astNode *right);
+astNode *createASTIntConst(int value);
+astNode *createASTBuiltin(builtin builtinToken, astNode *left);
 
 // tmp only int because its easier than complex struct
 int eval(astNode *node);

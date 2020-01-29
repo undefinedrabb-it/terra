@@ -11,9 +11,20 @@ typeToken toTypeToken(int value)
     case '*':
         return Mul;
     default:
-        // TODO handle error 
+        // TODO handle error
         yyerror("unknown token %c", value);
         break;
+    }
+}
+
+builtin toBuiltin(char *name)
+{
+    if (strcmp(name, "print") == 0)
+        return print;
+    else
+    {
+        // TODO handle error
+        yyerror("unknown builtin %s", name);
     }
 }
 
@@ -30,9 +41,9 @@ astNode *createAST(typeToken type, astNode *left, astNode *right)
     return node;
 }
 
-astNode *createIntConst(int value)
+astNode *createASTIntConst(int value)
 {
-    intConst *node = (intConst *)malloc(sizeof(intConst));
+    astIntConst *node = (astIntConst *)malloc(sizeof(astIntConst));
 
     // TODO check if node is create
 
@@ -40,6 +51,35 @@ astNode *createIntConst(int value)
     node->value = value;
 
     return (astNode *)node;
+}
+
+astNode *createASTBuiltin(builtin builtinToken, astNode *left)
+{
+    astBuiltin *node = (astBuiltin *)malloc(sizeof(astBuiltin));
+
+    // TODO check if node is create
+
+    node->nodeType = Builtin;
+    node->left = left;
+    node->builtinToken = builtinToken;
+
+    return (astNode *)node;
+}
+
+int callBuiltin(astNode *node)
+{
+    int value;
+    switch (((astBuiltin *)node)->builtinToken)
+    {
+    case print:
+        printf("%d\n", eval(((astBuiltin *)node)->left));
+        break;
+
+    default:
+        yyerror("unknown builtin func %d", ((astBuiltin *)node)->builtinToken);
+        break;
+    }
+
 }
 
 int eval(astNode *node)
@@ -62,9 +102,12 @@ int eval(astNode *node)
     case Div:
         value = eval(node->left) / eval(node->right);
         break;
+    case Builtin:
+        value = callBuiltin(node);
     case Constant:
-        value = ((intConst *)node)->value;
+        value = ((astIntConst *)node)->value;
         break;
+        
     default:
         yyerror("not define node %d", node->nodeType);
         break;
@@ -87,15 +130,22 @@ void deleteAST(astNode *node)
         deleteAST(node->right);
 
         break;
+
+    case Builtin:
+
+        deleteAST(node->left);
+
+        break;
+
     case Constant:
         break;
+
     default:
-        // TODO handle error 
+        // TODO handle error
         yyerror("not define node %d", node->nodeType);
         break;
     }
 
     node = freeAndNullify(node);
     // TODO check if node is free
-    
 }
