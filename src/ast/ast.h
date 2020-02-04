@@ -73,10 +73,7 @@ typedef struct astIntConst
     int value;
 } astIntConst;
 
-builtin toBuiltin(char *name);
-typeToken toTypeToken(int value);
-cmpToken toCmpToken(char *name);
-flowToken toFlowToken(char*name);
+// builtin toBuiltin(char *name);
 
 astNode *createAST(typeToken type, astNode *left, astNode *right);
 astNode *createASTCmp(cmpToken type, astNode *left, astNode *right);

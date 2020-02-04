@@ -13,6 +13,7 @@ int main()
         perror("Error");
 
     yyparse();
+
     fclose(yyin);
 
     return 0;

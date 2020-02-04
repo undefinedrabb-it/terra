@@ -36,7 +36,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
 
 
 ";" { return SEMI;  }
-"\n" {yylineno += 1;}
+"\n" {yylineno += 1; return EOL;}
 
 [ \t] {}
 

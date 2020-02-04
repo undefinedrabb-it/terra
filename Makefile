@@ -4,8 +4,7 @@ YYAC = bison
 
 YYFLAG = -L c -g -d
 CCFLAG = -Wall -Wextra -pedantic -std=c11 -Wfloat-equal -Winit-self -g3
-SANITAZE = 
-a = -Wuninitialized -fsanitize=leak -fno-common -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined -fstack-protector-all
+SANITAZE = -Wuninitialized -fsanitize=leak -fno-common -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined -fstack-protector-all
 
 SRC = src/
 CORE = $(SRC)core/
@@ -42,11 +41,14 @@ utils: header
 ast: header
 	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)ast.o $(AST)ast.c
 
+astHelper: header
+	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)astHelper.o $(AST)astHelper.c
+
 core: header
 	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)core.o $(CORE)terra.c
 
-cc: parser lexer utils ast core
-	$(CC) -Ibuild/obj -w $(SANITAZE) $(OBJ)core.o $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o -o $(OUT)terra
+cc: parser lexer utils ast core astHelper
+	$(CC) -Ibuild/obj -w $(SANITAZE) $(OBJ)core.o $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o $(OBJ)astHelper.o  -o $(OUT)terra
 
 clean:
 	rm $(OBJ)* $(OUT)terra $(GRAPH)*

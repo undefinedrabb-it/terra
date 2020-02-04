@@ -26,7 +26,7 @@
 
 %token ASIGN // =
 
-%token SEMI // kinda EOL token
+%token SEMI EOL // kinda EOL token
 
 // set priority of opeartor lower greater
 %right ASIGN EQUAL_TO LESS_THAN
@@ -40,11 +40,11 @@
 %%
 
 program:
-    | program stmt SEMI { eval($2); deleteAST($2); }
+    | program stmt EOL { eval($2); deleteAST($2); }
     ;
 
-stmt: exp
-    | builtin
+stmt: exp SEMI
+    | builtin SEMI
     | ifStmt
     ;
 
