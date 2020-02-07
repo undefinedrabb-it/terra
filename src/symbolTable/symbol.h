@@ -8,7 +8,7 @@ typedef struct symbol
     char *name;
     int value; // temporary value
     // astNode* func; // TODO this <== its means aaaaa function
-    struct symbol *next;
+    // struct symbol *next;
 } symbol;
 
 symbol *createSymbol(char *name, int value);

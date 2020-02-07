@@ -12,6 +12,10 @@
     int number;
 };
 
+%token START_TOKEN END_TOKEN
+
+%token LET
+
 %token <number> NUMBER // 
 
 %token ADD SUB MUL DIV// operator
@@ -26,7 +30,7 @@
 
 %token ASIGN // =
 
-%token SEMI EOL // kinda EOL token
+%token SEMI // kinda EOL token
 
 // set priority of opeartor lower greater
 %right ASIGN EQUAL_TO LESS_THAN
@@ -39,16 +43,19 @@
 
 %%
 
-program:
-    | program stmt EOL { eval($2); deleteAST($2); }
+program: START_TOKEN listStmt END_TOKEN { eval($2); deleteAST($2); }
     ;
 
-stmt: exp SEMI
-    | builtin SEMI
+stmt: builtin SEMI
     | ifStmt
     ;
 
-listStmt: stmt
+listStmt:               { $$= NULL; }
+        | stmt listStmt { if($2==NULL)
+                            $$=$1;
+                            else 
+                                $$=createAST(toTypeToken('L'),$1,$2); 
+                        }
     ;  
 
 ifStmt: IF OPEN_BRACKET cmp CLOSE_BRACKET OPEN_CURRLY_BRACKET listStmt CLOSE_CURRLY_BRACKET { $$ = createASTFlow(toFlowToken("if"),$3, $6, NULL); }

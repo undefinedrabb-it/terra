@@ -23,6 +23,8 @@ typeToken toTypeToken(int value)
         return Mul;
     case '/':
         return Div;
+    case 'L':
+        return ListStmt;
     default:
         // TODO handle error
         yyerror("unknown token %c", value);

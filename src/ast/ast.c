@@ -124,6 +124,10 @@ int eval(astNode *node)
     case Builtin:
         value = callBuiltin(node);
         break;
+    case ListStmt:
+        eval(node->left);
+        eval(node->right);
+        break;
     case Cmp:
         value = compare(node);
         break;
@@ -158,6 +162,8 @@ astNode *deleteAST(astNode *node)
         case Sub:
         case Mul:
         case Div:
+
+        case ListStmt:
 
         case Cmp:
 

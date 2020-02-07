@@ -3,8 +3,8 @@
     #include "terra.tab.h"
     #include "index.h"
 
-    // "let" {	printf("LET ");	}
     // "while" {	printf("WHILE ");	}
+
 
 
 // {ID} { yylval.s = atoi(yytext); return NAME;}
@@ -15,15 +15,19 @@ ID [a-zA-Z][a-zA-Z0-9]*
 
 %%  
 
-"+" { return ADD;   }
-"-" { return SUB;   }
-"*" { return MUL;   }
-"/" { return DIV;   }
+"$$START$$PROGRAM"  { return START_TOKEN;   }
+"$$END$$PROGRAM"    { return END_TOKEN;     }
 
-"==" {	return EQUAL_TO;	}
-"<" {	return LESS_THAN;	}
+"+"     {  return ADD;   }
+"-"     {  return SUB;   }
+"*"     {  return MUL;   }
+"/"     {  return DIV;   }
 
-"if" {	return IF;	}
+"=="    { 	return EQUAL_TO;	}
+"<"     {	return LESS_THAN;	}
+
+"if"    {	return IF;	}
+"let"   {	return LET;	}
 
 "print" {   return BUILTIN_PRINT; }
 
@@ -36,11 +40,11 @@ ID [a-zA-Z][a-zA-Z0-9]*
 
 
 ";" { return SEMI;  }
-"\n" {yylineno += 1; return EOL;}
+"\n" {yylineno += 1;}
 
 [ \t] {}
 
-.         { yyerror("Unknown character %d",yylineno);}
+.         { yyerror("Unknown character %d %s |",yylineno,yytext);}
 
 %% 
 

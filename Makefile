@@ -12,6 +12,7 @@ LEXER = $(SRC)lexer/
 PARSER = $(SRC)parser/
 UTILS = $(SRC)utils/
 AST = $(SRC)ast/
+SYMTAB = $(SRC)symbolTable/
 
 BUILD = build/
 OBJ = $(BUILD)obj/
@@ -28,6 +29,8 @@ header:
 	cp $(CORE)terra.h $(OBJ)
 	cp $(UTILS)utils.h $(OBJ)
 	cp $(AST)ast.h $(OBJ)
+	cp $(SYMTAB)symTab.h $(OBJ)
+	cp $(SYMTAB)symbol.h $(OBJ)
 
 lexer: header
 	$(FLEX) -o $(OBJ)lex.yy.c $(LEXER)terra.l
@@ -44,11 +47,17 @@ ast: header
 astHelper: header
 	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)astHelper.o $(AST)astHelper.c
 
+symTab: header
+	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)symTab.o $(SYMTAB)symTab.c
+
+symbol: header
+	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)symbol.o $(SYMTAB)symbol.c
+
 core: header
 	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)core.o $(CORE)terra.c
 
-cc: parser lexer utils ast core astHelper
-	$(CC) -Ibuild/obj -w $(SANITAZE) $(OBJ)core.o $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o $(OBJ)astHelper.o  -o $(OUT)terra
+cc: parser lexer utils ast astHelper symTab symbol core
+	$(CC) -Ibuild/obj -w $(SANITAZE) $(OBJ)core.o $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o $(OBJ)astHelper.o $(OBJ)symbol.o $(OBJ)symTab.o  -o $(OUT)terra
 
 clean:
 	rm $(OBJ)* $(OUT)terra $(GRAPH)*
