@@ -19,7 +19,15 @@ OBJ = $(BUILD)obj/
 OUT = $(BUILD)out/
 GRAPH = $(OUT)graph/
 
-all: cc graph
+
+all: dirMake cc graph
+
+dirMake:
+	mkdir $(BUILD)
+	mkdir $(OBJ)
+	mkdir $(OUT)
+	mkdir $(GRAPH)
+
 
 graph:
 	dot -Tpng $(OBJ)terra.dot > $(GRAPH)automatonGraph.png
@@ -60,4 +68,4 @@ cc: parser lexer utils ast astHelper symTab symbol core
 	$(CC) -Ibuild/obj -w $(SANITAZE) $(OBJ)core.o $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o $(OBJ)astHelper.o $(OBJ)symbol.o $(OBJ)symTab.o  -o $(OUT)terra
 
 clean:
-	rm $(OBJ)* $(OUT)terra $(GRAPH)*
+	rm -R $(BUILD)
