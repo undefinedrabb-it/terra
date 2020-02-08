@@ -5,9 +5,6 @@
 
     // "while" {	printf("WHILE ");	}
 
-
-
-// {ID} { yylval.s = atoi(yytext); return NAME;}
 %}
 
 DIGIT [0-9]
@@ -28,6 +25,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
 
 "if"    {	return IF;	}
 "let"   {	return LET;	}
+"="     {	return ASSIGN; }
 
 "print" {   return BUILTIN_PRINT; }
 
@@ -37,6 +35,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
 "}"     {	return CLOSE_CURRLY_BRACKET; }
 
 {DIGIT}* { yylval.number = atoi(yytext); return NUMBER;	}
+{ID}     { yylval.symbol = createSymbol(yytext,0); return NAME; }
 
 
 ";" { return SEMI;  }

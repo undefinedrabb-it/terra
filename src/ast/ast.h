@@ -15,6 +15,7 @@ typedef enum typeToken
     Builtin,
     Cmp,
     Flow,
+    Assignment, 
 } typeToken;
 
 // TODO feature scan
@@ -31,7 +32,8 @@ typedef enum cmpToken
 } cmpToken;
 
 // TODO feature for{} while{} do{}while
-typedef enum flowToken {
+typedef enum flowToken
+{
     If
 } flowToken;
 
@@ -49,6 +51,13 @@ typedef struct astCmp
     astNode *left;
     astNode *right;
 } astCmp;
+
+typedef struct astAssingment
+{
+    typeToken nodeType;
+    astNode *right;
+    struct symbol *left;
+} astAssingment;
 
 typedef struct astFlow
 {

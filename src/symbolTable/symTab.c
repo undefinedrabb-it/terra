@@ -17,12 +17,20 @@ symbolTable *createSymbolTable(size_t size)
     return symTab;
 }
 
-symbolTable *addSymbolToSymbolTable(symbolTable *symTab, char *name, int value)
+symbol *addToSymbolTable(symbolTable *symTab, char *name, int value)
 {
     if (symTab->numOfSymbols + 1 < symTab->size)
         symTab->symbols[symTab->numOfSymbols++] = addSymbol(NULL,name, value);
 
-    return symTab;
+    return  symTab->symbols[symTab->numOfSymbols-1];
+}
+
+symbol *addSymbolToSymbolTable(symbolTable *symTab, symbol *sym)
+{
+    if (symTab->numOfSymbols + 1 < symTab->size)
+        symTab->symbols[symTab->numOfSymbols++] = sym;
+
+    return  symTab->symbols[symTab->numOfSymbols-1];
 }
 
 int findSymbolByNameInTable(symbolTable *symTab, char *name)

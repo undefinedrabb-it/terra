@@ -3,18 +3,22 @@
     int yylex();
     // | LET NAME ASIGN exp SEMI { printf("%s",%2); }
     
-    //! %parse-param {}
 %}
+
+%parse-param {struct symbolTable *symTab}
 
 
 %union{
     struct astNode *node;
+    struct symbol *symbol;
     int number;
 };
 
 %token START_TOKEN END_TOKEN
 
-%token LET
+%token LET 
+
+%token <symbol> NAME
 
 %token <number> NUMBER // 
 
@@ -28,7 +32,7 @@
 
 %token OPEN_BRACKET CLOSE_BRACKET OPEN_CURRLY_BRACKET CLOSE_CURRLY_BRACKET // ( ) { }
 
-%token ASIGN // =
+%token ASSIGN // =
 
 %token SEMI // kinda EOL token
 
@@ -37,7 +41,7 @@
 %left ADD SUB
 %left MUL DIV
 
-%type <node> exp stmt builtin cmp listStmt ifStmt// 
+%type <node> exp stmt builtin cmp listStmt ifStmt assignment// 
 
 %start program  // start rule
 
@@ -46,13 +50,17 @@
 program: START_TOKEN listStmt END_TOKEN { eval($2); deleteAST($2); }
     ;
 
+assignment: LET NAME ASSIGN exp { $$ = createASTAssingment($2,$4); }
+    ;
+
 stmt: builtin SEMI
     | ifStmt
+    | assignment SEMI 
     ;
 
 listStmt:               { $$= NULL; }
         | stmt listStmt { if($2==NULL)
-                            $$=$1;
+                                $$=$1;
                             else 
                                 $$=createAST(toTypeToken('L'),$1,$2); 
                         }

@@ -38,8 +38,8 @@ FILE *prepFile(char *inName)
 int main()
 {
     yyin = prepFile("test/easy");
-
-    yyparse();
+    symbolTable *symTab = createSymbolTable(500);
+    yyparse(symTab);
 
     fclose(yyin);
 

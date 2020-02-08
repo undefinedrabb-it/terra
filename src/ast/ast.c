@@ -39,6 +39,17 @@ astNode *createASTIntConst(int value)
     return (astNode *)node;
 }
 
+astNode *createASTAssingment(struct symbol *left, astNode *right)
+{
+    astAssingment *node = malloc(sizeof(astAssingment));
+
+    node->nodeType = Assignment;
+    node->left = left;
+    node->right = right;
+
+    return (astNode *)node;
+}
+
 astNode *createASTFlow(flowToken type, astNode *cond, astNode *body, astNode *optional)
 {
     astFlow *node = (astFlow *)malloc(sizeof(astFlow));
@@ -60,7 +71,7 @@ astNode *createASTBuiltin(builtin builtinToken, astNode *left)
 
     // TODO check if node is create
 
-    node->nodeType = Builtin;
+    node->nodeType = Builtin; 
     node->builtinToken = builtinToken;
     node->left = left;
 
@@ -124,6 +135,9 @@ int eval(astNode *node)
     case Builtin:
         value = callBuiltin(node);
         break;
+    case Assignment:
+        value = ((symbol *)((astAssingment *)node)->left)->value = eval(((astAssingment *)node)->right);
+        break;
     case ListStmt:
         eval(node->left);
         eval(node->right);
@@ -178,6 +192,14 @@ astNode *deleteAST(astNode *node)
             deleteAST(((astFlow *)node)->cond);
             deleteAST(((astFlow *)node)->body);
             deleteAST(((astFlow *)node)->optional);
+
+            break;
+
+        case Assignment:
+
+            deleteSymbol(((astAssingment*)node)->left);
+        
+            deleteAST(node->right);
 
             break;
 

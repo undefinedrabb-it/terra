@@ -10,8 +10,7 @@
 #include "utils.h"
 #include "terra.h"
 
-#ifndef SYMBOL_H
+#include "symbol.h"
 #include "symTab.h"
-#endif // SYMBOL_H
 
 #endif // INDEX_H
