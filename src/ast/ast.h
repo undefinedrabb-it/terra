@@ -89,7 +89,8 @@ astNode *createASTCmp(cmpToken type, astNode *left, astNode *right);
 astNode *createASTFlow(flowToken type, astNode *cond, astNode *body, astNode *optional);
 astNode *createASTIntConst(int value);
 astNode *createASTBuiltin(builtin builtinToken, astNode *left);
-astNode *createASTAssingment(struct symbol *left, astNode *right, struct symbolTable *symTab);
+astNode *createASTAssignment(struct symbol *left, astNode *right, struct symbolTable *symTab);
+astNode *createASTAssignUpdate(struct symbol *left, astNode *right, struct symbolTable *symTab);
 astNode *createASTRef(struct symbol *left, struct symbolTable *symTab);
 
 // tmp only int because its easier than complex struct

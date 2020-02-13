@@ -50,12 +50,13 @@
 program: START_TOKEN listStmt END_TOKEN { eval($2,symTab); deleteAST($2); }
     ;
 
-assignment: LET NAME ASSIGN exp { $$ = createASTAssingment($2,$4,symTab); }
+assignment: LET NAME ASSIGN exp { $$ = createASTAssignment($2,$4,symTab); }
     ;
 
 stmt: builtin SEMI
     | ifStmt
     | assignment SEMI 
+    | NAME ASSIGN exp SEMI { $$ = createASTAssignUpdate($1,$3,symTab); }
     ;
 
 listStmt:               { $$= NULL; }
@@ -77,7 +78,7 @@ cmp: exp
 builtin: BUILTIN_PRINT OPEN_BRACKET exp CLOSE_BRACKET { $$ = createASTBuiltin(toBuiltin("print"),$3); }
     ;
 
-exp: NAME         { $$ = createASTRef($1,symTab); }      
+exp: NAME         { $$ = createASTRef($1,symTab); }
     | NUMBER      { $$ = createASTIntConst($1); }
     | exp ADD exp { $$ = createAST(toTypeToken('+'),$1, $3); }
     | exp SUB exp { $$ = createAST(toTypeToken('-'),$1, $3); }

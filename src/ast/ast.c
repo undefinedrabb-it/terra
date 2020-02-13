@@ -39,12 +39,27 @@ astNode *createASTIntConst(int value)
     return (astNode *)node;
 }
 
-astNode *createASTAssingment(struct symbol *left, astNode *right, struct symbolTable *symTab)
+astNode *createASTAssignment(struct symbol *left, astNode *right, struct symbolTable *symTab)
 {
     astAssingment *node = malloc(sizeof(astAssingment));
 
     node->nodeType = Assignment;
     node->left = addSymbolToSymbolTable(symTab, left);
+    node->right = right;
+
+    return (astNode *)node;
+}
+
+astNode *createASTAssignUpdate(struct symbol *left, astNode *right, struct symbolTable *symTab)
+{
+    astAssingment *node = malloc(sizeof(astAssingment));
+
+    node->nodeType = Assignment;
+    char *tmp = (char *)malloc(sizeof(char) * (sizeof(left->name)));
+    strcpy(tmp, left->name);
+    deleteSymbol(left);
+    node->left = GetSymbolByName(symTab, tmp);
+    freeAndNullify(tmp);
     node->right = right;
 
     return (astNode *)node;
@@ -222,10 +237,6 @@ astNode *deleteAST(astNode *node)
             break;
 
         case Reference:
-
-            deleteSymbol((astAssingment *)node->left);
-            
-            break;
 
         case Constant:
             break;
