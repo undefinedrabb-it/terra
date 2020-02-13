@@ -32,10 +32,11 @@ typedef enum cmpToken
     Less
 } cmpToken;
 
-// TODO feature for{} while{} do{}while
+// TODO feature for{} do{}while
 typedef enum flowToken
 {
-    If
+    If,
+    While
 } flowToken;
 
 typedef struct astNode

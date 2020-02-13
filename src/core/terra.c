@@ -37,7 +37,7 @@ FILE *prepFile(char *inName)
 
 int main()
 {
-    yyin = prepFile("test/easy");
+    yyin = prepFile("test/proper");
     symbolTable *symTab = createSymbolTable(500);
     yyparse(symTab);
 

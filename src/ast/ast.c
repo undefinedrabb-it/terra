@@ -119,6 +119,34 @@ int callBuiltin(astNode *node, symbolTable *symTab)
     }
 }
 
+int flow(astNode *node, symbolTable *symTab)
+{
+    switch (((astFlow *)node)->flowType)
+    {
+    case If:
+        if (eval(((astFlow *)node)->cond, symTab))
+        {
+            eval(((astFlow *)node)->body, symTab);
+        }
+        // else if (((astFlow *)node)->optional != NULL)
+        // {
+        //     eval(((astFlow *)node)->optional, symTab);
+        // }
+        break;
+
+    case While:
+        while (eval(((astFlow *)node)->cond, symTab))
+        {
+            eval(((astFlow *)node)->body, symTab);
+        }
+        break;
+
+    default:
+        yyerror("unknown flow type %d", ((astFlow *)node)->flowType);
+        break;
+    }
+}
+
 int compare(astNode *node, symbolTable *symTab)
 {
     int value;
@@ -132,7 +160,7 @@ int compare(astNode *node, symbolTable *symTab)
         break;
 
     default:
-        yyerror("unknown comperator  %d", ((astCmp *)node)->cmpType);
+        yyerror("unknown comparator  %d", ((astCmp *)node)->cmpType);
         break;
     }
     return value;
@@ -175,14 +203,7 @@ int eval(astNode *node, symbolTable *symTab)
         value = compare(node, symTab);
         break;
     case Flow:
-        if (eval(((astFlow *)node)->cond, symTab))
-        {
-            eval(((astFlow *)node)->body, symTab);
-        }
-        else if (((astFlow *)node)->optional != NULL)
-        {
-            eval(((astFlow *)node)->optional, symTab);
-        }
+        value = flow(node, symTab);
         break;
     case Constant:
         value = ((astIntConst *)node)->value;
@@ -226,7 +247,7 @@ astNode *deleteAST(astNode *node)
 
         case Assignment:
 
-            deleteAST((astAssingment *)node->right);
+            deleteAST((astNode *)node->right);
 
             break;
 
@@ -237,6 +258,8 @@ astNode *deleteAST(astNode *node)
             break;
 
         case Reference:
+
+            deleteSymbol(((astAssingment *)node)->left);
 
         case Constant:
             break;

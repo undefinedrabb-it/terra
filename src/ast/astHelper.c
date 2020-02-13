@@ -32,7 +32,6 @@ typeToken toTypeToken(int value)
     }
 }
 
-
 cmpToken toCmpToken(char *name)
 {
     if (strcmp(name, "==") == 0)
@@ -50,6 +49,8 @@ flowToken toFlowToken(char *name)
 {
     if (strcmp(name, "if") == 0)
         return If;
+    if (strcmp(name, "while") == 0)
+        return While;
     else
     {
         // TODO handle error

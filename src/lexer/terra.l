@@ -24,6 +24,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
 "<"     {	return LESS_THAN;	}
 
 "if"    {	return IF;	}
+"while" {	return WHILE;	}
 "let"   {	return LET;	}
 "="     {	return ASSIGN; }
 

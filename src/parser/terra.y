@@ -28,6 +28,8 @@
 
 %token IF // condition
 
+%token WHILE // while loop
+
 %token BUILTIN_PRINT // builtin func
 
 %token OPEN_BRACKET CLOSE_BRACKET OPEN_CURRLY_BRACKET CLOSE_CURRLY_BRACKET // ( ) { }
@@ -41,7 +43,7 @@
 %left ADD SUB
 %left MUL DIV
 
-%type <node> exp stmt builtin cmp listStmt ifStmt assignment// 
+%type <node> exp stmt builtin cmp listStmt ifStmt assignment loop // 
 
 %start program  // start rule
 
@@ -56,8 +58,11 @@ assignment: LET NAME ASSIGN exp { $$ = createASTAssignment($2,$4,symTab); }
 stmt: builtin SEMI
     | ifStmt
     | assignment SEMI 
+    | loop
     | NAME ASSIGN exp SEMI { $$ = createASTAssignUpdate($1,$3,symTab); }
     ;
+
+loop: WHILE OPEN_BRACKET cmp CLOSE_BRACKET OPEN_CURRLY_BRACKET listStmt CLOSE_CURRLY_BRACKET { $$ = createASTFlow(toFlowToken("while"), $3, $6, NULL); }
 
 listStmt:               { $$= NULL; }
         | stmt listStmt { if($2==NULL)
@@ -67,7 +72,7 @@ listStmt:               { $$= NULL; }
                         }
     ;  
 
-ifStmt: IF OPEN_BRACKET cmp CLOSE_BRACKET OPEN_CURRLY_BRACKET listStmt CLOSE_CURRLY_BRACKET { $$ = createASTFlow(toFlowToken("if"),$3, $6, NULL); }
+ifStmt: IF OPEN_BRACKET cmp CLOSE_BRACKET OPEN_CURRLY_BRACKET listStmt CLOSE_CURRLY_BRACKET { $$ = createASTFlow(toFlowToken("if"), $3, $6, NULL); }
     ;
 
 cmp: exp
