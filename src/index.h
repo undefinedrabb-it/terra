@@ -6,11 +6,11 @@
 #include <stdarg.h>
 #include <string.h>
 
+#include "symTab.h"
+#include "symbol.h"
+
 #include "ast.h"
 #include "utils.h"
 #include "terra.h"
-
-#include "symbol.h"
-#include "symTab.h"
 
 #endif // INDEX_H

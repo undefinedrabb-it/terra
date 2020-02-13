@@ -20,7 +20,7 @@ OUT = $(BUILD)out/
 GRAPH = $(OUT)graph/
 
 
-all: dirMake cc graph
+all: clean dirMake cc graph
 
 dirMake:
 	mkdir $(BUILD)

@@ -8,7 +8,7 @@ symbolTable *createSymbolTable(size_t size)
 
     symTab->numOfSymbols = 0;
 
-    symTab->symbols = (symbol **)malloc(sizeof(symbol) * size);
+    symTab->symbols = (symbol **)malloc(sizeof(symbol *) * size);
     // TODO check if symbols is create
 
     for (size_t i = 0; i < symTab->size; i++)
@@ -20,9 +20,9 @@ symbolTable *createSymbolTable(size_t size)
 symbol *addToSymbolTable(symbolTable *symTab, char *name, int value)
 {
     if (symTab->numOfSymbols + 1 < symTab->size)
-        symTab->symbols[symTab->numOfSymbols++] = addSymbol(NULL,name, value);
+        symTab->symbols[symTab->numOfSymbols++] = addSymbol(NULL, name, value);
 
-    return  symTab->symbols[symTab->numOfSymbols-1];
+    return symTab->symbols[symTab->numOfSymbols - 1];
 }
 
 symbol *addSymbolToSymbolTable(symbolTable *symTab, symbol *sym)
@@ -30,7 +30,7 @@ symbol *addSymbolToSymbolTable(symbolTable *symTab, symbol *sym)
     if (symTab->numOfSymbols + 1 < symTab->size)
         symTab->symbols[symTab->numOfSymbols++] = sym;
 
-    return  symTab->symbols[symTab->numOfSymbols-1];
+    return symTab->symbols[symTab->numOfSymbols - 1];
 }
 
 int findSymbolByNameInTable(symbolTable *symTab, char *name)
@@ -44,8 +44,10 @@ int findSymbolByNameInTable(symbolTable *symTab, char *name)
 
 symbolTable *deleteSymbolTable(symbolTable *symTab)
 {
-    for (size_t i = 0; i < symTab->size; i++)
-        symTab->symbols[i] = deleteSymbol(symTab->symbols[i]); // TODO check if symbols is delete
+    for (size_t i = 0; i < symTab->numOfSymbols; i++)
+            symTab->symbols[i] = deleteSymbol(symTab->symbols[i]); // TODO check if symbols is delete
+
+    freeAndNullify(symTab->symbols);
 
     return (symbolTable *)freeAndNullify(symTab);
 }

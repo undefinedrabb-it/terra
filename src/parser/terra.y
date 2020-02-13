@@ -50,7 +50,7 @@
 program: START_TOKEN listStmt END_TOKEN { eval($2); deleteAST($2); }
     ;
 
-assignment: LET NAME ASSIGN exp { $$ = createASTAssingment($2,$4); }
+assignment: LET NAME ASSIGN exp { $$ = createASTAssingment($2,$4,symTab); }
     ;
 
 stmt: builtin SEMI

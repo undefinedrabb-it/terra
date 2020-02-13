@@ -43,5 +43,7 @@ int main()
 
     fclose(yyin);
 
+    deleteSymbolTable(symTab);
+    
     return 0;
 }

@@ -50,5 +50,7 @@ symbol *deleteSymbol(symbol *sym)
     //     sym->name = freeAndNullify(sym->name); // TODO check if name is delete
     //     deleteSymbol(sym->next);
     // }
+    freeAndNullify(sym->name);
+    
     return (symbol *)freeAndNullify(sym); // TODO check if symbol is delete
 }

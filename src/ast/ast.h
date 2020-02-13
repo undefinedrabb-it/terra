@@ -55,8 +55,8 @@ typedef struct astCmp
 typedef struct astAssingment
 {
     typeToken nodeType;
-    astNode *right;
     struct symbol *left;
+    astNode *right;
 } astAssingment;
 
 typedef struct astFlow
@@ -83,13 +83,13 @@ typedef struct astIntConst
     int value;
 } astIntConst;
 
-// builtin toBuiltin(char *name);
 
 astNode *createAST(typeToken type, astNode *left, astNode *right);
 astNode *createASTCmp(cmpToken type, astNode *left, astNode *right);
 astNode *createASTFlow(flowToken type, astNode *cond, astNode *body, astNode *optional);
 astNode *createASTIntConst(int value);
 astNode *createASTBuiltin(builtin builtinToken, astNode *left);
+astNode *createASTAssingment(struct symbol *left, astNode *right,struct symbolTable *symTab);
 
 // tmp only int because its easier than complex struct
 int eval(astNode *node);

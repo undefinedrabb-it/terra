@@ -39,12 +39,12 @@ astNode *createASTIntConst(int value)
     return (astNode *)node;
 }
 
-astNode *createASTAssingment(struct symbol *left, astNode *right)
+astNode *createASTAssingment(struct symbol *left, astNode *right, struct symbolTable *symTab)
 {
     astAssingment *node = malloc(sizeof(astAssingment));
 
     node->nodeType = Assignment;
-    node->left = left;
+    node->left = addSymbolToSymbolTable(symTab, left);
     node->right = right;
 
     return (astNode *)node;
@@ -71,7 +71,7 @@ astNode *createASTBuiltin(builtin builtinToken, astNode *left)
 
     // TODO check if node is create
 
-    node->nodeType = Builtin; 
+    node->nodeType = Builtin;
     node->builtinToken = builtinToken;
     node->left = left;
 
@@ -197,9 +197,7 @@ astNode *deleteAST(astNode *node)
 
         case Assignment:
 
-            deleteSymbol(((astAssingment*)node)->left);
-        
-            deleteAST(node->right);
+            deleteAST((astAssingment *)node->right);
 
             break;
 
