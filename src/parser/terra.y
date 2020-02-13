@@ -47,7 +47,7 @@
 
 %%
 
-program: START_TOKEN listStmt END_TOKEN { eval($2); deleteAST($2); }
+program: START_TOKEN listStmt END_TOKEN { eval($2,symTab); deleteAST($2); }
     ;
 
 assignment: LET NAME ASSIGN exp { $$ = createASTAssingment($2,$4,symTab); }
@@ -77,7 +77,8 @@ cmp: exp
 builtin: BUILTIN_PRINT OPEN_BRACKET exp CLOSE_BRACKET { $$ = createASTBuiltin(toBuiltin("print"),$3); }
     ;
 
-exp: NUMBER       { $$ = createASTIntConst($1); }
+exp: NAME         { $$ = createASTRef($1,symTab); }      
+    | NUMBER      { $$ = createASTIntConst($1); }
     | exp ADD exp { $$ = createAST(toTypeToken('+'),$1, $3); }
     | exp SUB exp { $$ = createAST(toTypeToken('-'),$1, $3); }
     | exp MUL exp { $$ = createAST(toTypeToken('*'),$1, $3); }

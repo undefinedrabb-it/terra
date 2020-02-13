@@ -15,7 +15,8 @@ typedef enum typeToken
     Builtin,
     Cmp,
     Flow,
-    Assignment, 
+    Assignment,
+    Reference
 } typeToken;
 
 // TODO feature scan
@@ -83,16 +84,16 @@ typedef struct astIntConst
     int value;
 } astIntConst;
 
-
 astNode *createAST(typeToken type, astNode *left, astNode *right);
 astNode *createASTCmp(cmpToken type, astNode *left, astNode *right);
 astNode *createASTFlow(flowToken type, astNode *cond, astNode *body, astNode *optional);
 astNode *createASTIntConst(int value);
 astNode *createASTBuiltin(builtin builtinToken, astNode *left);
-astNode *createASTAssingment(struct symbol *left, astNode *right,struct symbolTable *symTab);
+astNode *createASTAssingment(struct symbol *left, astNode *right, struct symbolTable *symTab);
+astNode *createASTRef(struct symbol *left, struct symbolTable *symTab);
 
 // tmp only int because its easier than complex struct
-int eval(astNode *node);
+int eval(astNode *node, struct symbolTable *symTab);
 
 astNode *deleteAST(astNode *node);
 

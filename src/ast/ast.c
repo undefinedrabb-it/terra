@@ -50,6 +50,17 @@ astNode *createASTAssingment(struct symbol *left, astNode *right, struct symbolT
     return (astNode *)node;
 }
 
+astNode *createASTRef(struct symbol *left, struct symbolTable *symTab)
+{
+    astAssingment *node = malloc(sizeof(astAssingment));
+
+    node->nodeType = Reference;
+    node->left = left;
+    node->right = NULL;
+
+    return (astNode *)node;
+}
+
 astNode *createASTFlow(flowToken type, astNode *cond, astNode *body, astNode *optional)
 {
     astFlow *node = (astFlow *)malloc(sizeof(astFlow));
@@ -78,13 +89,13 @@ astNode *createASTBuiltin(builtin builtinToken, astNode *left)
     return (astNode *)node;
 }
 
-int callBuiltin(astNode *node)
+int callBuiltin(astNode *node, symbolTable *symTab)
 {
     int value;
     switch (((astBuiltin *)node)->builtinToken)
     {
     case print:
-        printf("%d\n", eval(((astBuiltin *)node)->left));
+        printf("%d\n", eval(((astBuiltin *)node)->left, symTab));
         break;
 
     default:
@@ -93,16 +104,16 @@ int callBuiltin(astNode *node)
     }
 }
 
-int compare(astNode *node)
+int compare(astNode *node, symbolTable *symTab)
 {
     int value;
     switch (((astCmp *)node)->cmpType)
     {
     case Equal:
-        value = eval(((astCmp *)node)->left) == eval(((astCmp *)node)->right);
+        value = eval(((astCmp *)node)->left, symTab) == eval(((astCmp *)node)->right, symTab);
         break;
     case Less:
-        value = eval(((astCmp *)node)->left) < eval(((astCmp *)node)->right);
+        value = eval(((astCmp *)node)->left, symTab) < eval(((astCmp *)node)->right, symTab);
         break;
 
     default:
@@ -112,7 +123,7 @@ int compare(astNode *node)
     return value;
 }
 
-int eval(astNode *node)
+int eval(astNode *node, symbolTable *symTab)
 {
     int value;
 
@@ -121,38 +132,41 @@ int eval(astNode *node)
     switch (node->nodeType)
     {
     case Add:
-        value = eval(node->left) + eval(node->right);
+        value = eval(node->left, symTab) + eval(node->right, symTab);
         break;
     case Sub:
-        value = eval(node->left) - eval(node->right);
+        value = eval(node->left, symTab) - eval(node->right, symTab);
         break;
     case Mul:
-        value = eval(node->left) * eval(node->right);
+        value = eval(node->left, symTab) * eval(node->right, symTab);
         break;
     case Div:
-        value = eval(node->left) / eval(node->right);
+        value = eval(node->left, symTab) / eval(node->right, symTab);
         break;
     case Builtin:
-        value = callBuiltin(node);
+        value = callBuiltin(node, symTab);
         break;
     case Assignment:
-        value = ((symbol *)((astAssingment *)node)->left)->value = eval(((astAssingment *)node)->right);
+        value = ((symbol *)((astAssingment *)node)->left)->value = eval(((astAssingment *)node)->right, symTab);
+        break;
+    case Reference:
+        value = ((symbol *)((astAssingment *)node)->left)->value = findSymbolByNameInTable(symTab, ((symbol *)((astAssingment *)node)->left)->name);
         break;
     case ListStmt:
-        eval(node->left);
-        eval(node->right);
+        eval(node->left, symTab);
+        eval(node->right, symTab);
         break;
     case Cmp:
-        value = compare(node);
+        value = compare(node, symTab);
         break;
     case Flow:
-        if (eval(((astFlow *)node)->cond))
+        if (eval(((astFlow *)node)->cond, symTab))
         {
-            eval(((astFlow *)node)->body);
+            eval(((astFlow *)node)->body, symTab);
         }
         else if (((astFlow *)node)->optional != NULL)
         {
-            eval(((astFlow *)node)->optional);
+            eval(((astFlow *)node)->optional, symTab);
         }
         break;
     case Constant:
@@ -205,6 +219,12 @@ astNode *deleteAST(astNode *node)
 
             deleteAST(node->left);
 
+            break;
+
+        case Reference:
+
+            deleteSymbol((astAssingment *)node->left);
+            
             break;
 
         case Constant:
