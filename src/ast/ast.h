@@ -22,7 +22,8 @@ typedef enum typeToken
 // TODO feature scan
 typedef enum builtin
 {
-    print
+    print,
+    scan
 } builtin;
 
 // TODO feature <= > >= ! and or

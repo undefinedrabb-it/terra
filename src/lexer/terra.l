@@ -29,6 +29,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
 "="     {	return ASSIGN; }
 
 "print" {   return BUILTIN_PRINT; }
+"scan" {   return BUILTIN_SCAN; }
 
 "("     {	return OPEN_BRACKET;	}
 ")"     {	return CLOSE_BRACKET;	}

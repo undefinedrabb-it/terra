@@ -51,6 +51,12 @@ symbol *deleteSymbol(symbol *sym)
     //     deleteSymbol(sym->next);
     // }
     freeAndNullify(sym->name);
-    
+
     return (symbol *)freeAndNullify(sym); // TODO check if symbol is delete
+}
+
+symbol *updateSymbolValue(symbol *sym, int value)
+{
+    sym->value = value;
+    return sym;
 }

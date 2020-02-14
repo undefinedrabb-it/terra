@@ -4,6 +4,8 @@ builtin toBuiltin(char *name)
 {
     if (strcmp(name, "print") == 0)
         return print;
+    if (strcmp(name, "scan") == 0)
+        return scan;
     else
     {
         // TODO handle error

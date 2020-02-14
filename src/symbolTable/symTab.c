@@ -17,14 +17,13 @@ symbolTable *createSymbolTable(size_t size)
     return symTab;
 }
 
-struct symbol *GetSymbolByName(symbolTable *symTab, char *name)
+struct symbol *getSymbolByName(symbolTable *symTab, char *name)
 {
     for (size_t i = 0; i < symTab->numOfSymbols; i++)
         if (findSymbolByName(symTab->symbols[i], name) != NULL)
             return symTab->symbols[i];
 
     return NULL;
-
 }
 
 symbol *addToSymbolTable(symbolTable *symTab, char *name, int value)
@@ -60,4 +59,13 @@ symbolTable *deleteSymbolTable(symbolTable *symTab)
     freeAndNullify(symTab->symbols);
 
     return (symbolTable *)freeAndNullify(symTab);
+}
+
+struct symbol *updateSymbolByName(symbolTable *symTab, char *name, int value)
+{
+    for (size_t i = 0; i < symTab->numOfSymbols; i++)
+        if (findSymbolByName(symTab->symbols[i], name) != NULL)
+            return updateSymbolValue(symTab->symbols[i], value);
+
+    return NULL;
 }

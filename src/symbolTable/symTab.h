@@ -17,9 +17,10 @@ typedef struct symbolTable
 symbolTable *createSymbolTable(size_t size);
 
 int findSymbolByNameInTable(symbolTable *symTab, char *name);
-struct symbol *GetSymbolByName(symbolTable *symTab, char *name);
+struct symbol *getSymbolByName(symbolTable *symTab, char *name);
 struct symbol *addSymbolToSymbolTable(symbolTable *symTab, struct symbol *sym);
 struct symbol *addToSymbolTable(symbolTable *symTab, char *name, int value);
+struct symbol *updateSymbolByName(symbolTable *symTab, char *name, int value);
 
 symbolTable *deleteSymbolTable(symbolTable *symTab);
 

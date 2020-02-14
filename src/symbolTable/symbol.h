@@ -19,5 +19,6 @@ symbol *findSymbolByName(symbol *node, char *name);
 
 symbol *deleteSymbol(symbol *sym);
 
+symbol *updateSymbolValue(symbol *sym, int value);
 
 #endif // SYMBOL_H

@@ -18,7 +18,7 @@
 
 %token LET 
 
-%token <symbol> NAME
+%token <symbol> NAME 
 
 %token <number> NUMBER // 
 
@@ -30,7 +30,7 @@
 
 %token WHILE // while loop
 
-%token BUILTIN_PRINT // builtin func
+%token BUILTIN_PRINT BUILTIN_SCAN // builtin func
 
 %token OPEN_BRACKET CLOSE_BRACKET OPEN_CURRLY_BRACKET CLOSE_CURRLY_BRACKET // ( ) { }
 
@@ -43,7 +43,7 @@
 %left ADD SUB
 %left MUL DIV
 
-%type <node> exp stmt builtin cmp listStmt ifStmt assignment loop // 
+%type <node> exp stmt builtin cmp listStmt ifStmt assignment loop ref// 
 
 %start program  // start rule
 
@@ -60,6 +60,9 @@ stmt: builtin SEMI
     | assignment SEMI 
     | loop
     | NAME ASSIGN exp SEMI { $$ = createASTAssignUpdate($1,$3,symTab); }
+    ;
+
+ref: NAME  { $$ = createASTRef($1,symTab); }
     ;
 
 loop: WHILE OPEN_BRACKET cmp CLOSE_BRACKET OPEN_CURRLY_BRACKET listStmt CLOSE_CURRLY_BRACKET { $$ = createASTFlow(toFlowToken("while"), $3, $6, NULL); }
@@ -81,9 +84,10 @@ cmp: exp
     ;
 
 builtin: BUILTIN_PRINT OPEN_BRACKET exp CLOSE_BRACKET { $$ = createASTBuiltin(toBuiltin("print"),$3); }
+    | BUILTIN_SCAN OPEN_BRACKET ref CLOSE_BRACKET { $$ = createASTBuiltin(toBuiltin("scan"),$3); }
     ;
 
-exp: NAME         { $$ = createASTRef($1,symTab); }
+exp: ref
     | NUMBER      { $$ = createASTIntConst($1); }
     | exp ADD exp { $$ = createAST(toTypeToken('+'),$1, $3); }
     | exp SUB exp { $$ = createAST(toTypeToken('-'),$1, $3); }

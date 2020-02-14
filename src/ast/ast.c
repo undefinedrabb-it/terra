@@ -58,7 +58,7 @@ astNode *createASTAssignUpdate(struct symbol *left, astNode *right, struct symbo
     char *tmp = (char *)malloc(sizeof(char) * (sizeof(left->name)));
     strcpy(tmp, left->name);
     deleteSymbol(left);
-    node->left = GetSymbolByName(symTab, tmp);
+    node->left = getSymbolByName(symTab, tmp);
     freeAndNullify(tmp);
     node->right = right;
 
@@ -111,6 +111,10 @@ int callBuiltin(astNode *node, symbolTable *symTab)
     {
     case print:
         printf("%d\n", eval(((astBuiltin *)node)->left, symTab));
+        break;
+    case scan:
+        scanf("%d", &value);
+        symbol *tmp = updateSymbolByName(symTab, ((symbol *)((astAssingment *)((astBuiltin *)node)->left)->left)->name,value);
         break;
 
     default:
