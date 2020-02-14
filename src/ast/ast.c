@@ -162,6 +162,9 @@ int compare(astNode *node, symbolTable *symTab)
     case Less:
         value = eval(((astCmp *)node)->left, symTab) < eval(((astCmp *)node)->right, symTab);
         break;
+    case EqualOrLess:
+        value = eval(((astCmp *)node)->left, symTab) <= eval(((astCmp *)node)->right, symTab);
+        break;
 
     default:
         yyerror("unknown comparator  %d", ((astCmp *)node)->cmpType);

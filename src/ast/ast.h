@@ -30,7 +30,8 @@ typedef enum builtin
 typedef enum cmpToken
 {
     Equal,
-    Less
+    Less,
+    EqualOrLess
 } cmpToken;
 
 // TODO feature for{} do{}while

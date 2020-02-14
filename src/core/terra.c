@@ -44,6 +44,7 @@ int main(int argc, const char **argv)
     flag_parse(argc, argv, VERSION);
 
     yyin = prepFile(url);
+    // yyin = prepFile("test/fib.js");
     symbolTable *symTab = createSymbolTable(500);
     yyparse(symTab);
 

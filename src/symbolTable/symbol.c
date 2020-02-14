@@ -5,6 +5,7 @@ symbol *createSymbol(char *name, int value)
     symbol *sym = (symbol *)malloc(sizeof(symbol));
     sym->name = (char *)malloc((strlen(name) + 1) * sizeof(char));
     strcpy(sym->name, name);
+    freeAndNullify(name);
     sym->value = value;
     // sym->next = NULL;
 

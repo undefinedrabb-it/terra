@@ -40,6 +40,8 @@ cmpToken toCmpToken(char *name)
         return Equal;
     if (strcmp(name, "<") == 0)
         return Less;
+    if (strcmp(name, "<=") == 0)
+        return EqualOrLess;
     else
     {
         // TODO handle error

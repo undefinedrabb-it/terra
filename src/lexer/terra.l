@@ -12,7 +12,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
 
 %%  
 
-"$$START$$PROGRAM"  { return START_TOKEN;   }
+"$$START$$PROGRAM"  {yylineno-=1; return START_TOKEN;   }
 "$$END$$PROGRAM"    { return END_TOKEN;     }
 
 "+"     {  return ADD;   }
@@ -22,6 +22,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
 
 "=="    { 	return EQUAL_TO;	}
 "<"     {	return LESS_THAN;	}
+"<="     {	return EQUAL_TO_OR_LESS_THAN;	}
 
 "if"    {	return IF;	}
 "while" {	return WHILE;	}

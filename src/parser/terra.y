@@ -24,7 +24,7 @@
 
 %token ADD SUB MUL DIV// operator
 
-%token EQUAL_TO LESS_THAN // comperator
+%token EQUAL_TO LESS_THAN  EQUAL_TO_OR_LESS_THAN// comperator
 
 %token IF // condition
 
@@ -49,7 +49,7 @@
 
 %%
 
-program: START_TOKEN listStmt END_TOKEN { eval($2,symTab); deleteAST($2); }
+program: START_TOKEN listStmt END_rTOKEN { eval($2,symTab); deleteAST($2); }
     ;
 
 assignment: LET NAME ASSIGN exp { $$ = createASTAssignment($2,$4,symTab); }
@@ -81,6 +81,7 @@ ifStmt: IF OPEN_BRACKET cmp CLOSE_BRACKET OPEN_CURRLY_BRACKET listStmt CLOSE_CUR
 cmp: exp
     | exp EQUAL_TO exp   { $$ = createASTCmp(toCmpToken("=="),$1, $3);}
     | exp LESS_THAN exp { $$ = createASTCmp(toCmpToken("<"),$1, $3);}
+    | exp EQUAL_TO_OR_LESS_THAN exp { $$ = createASTCmp(toCmpToken("<="),$1, $3);}
     ;
 
 builtin: BUILTIN_PRINT OPEN_BRACKET exp CLOSE_BRACKET { $$ = createASTBuiltin(toBuiltin("print"),$3); }
