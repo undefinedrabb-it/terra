@@ -19,6 +19,8 @@ OBJ = $(BUILD)obj/
 OUT = $(BUILD)out/
 GRAPH = $(OUT)graph/
 
+DEPS = deps/
+FLAG = $(DEPS)flag/
 
 all: clean dirMake cc graph
 
@@ -39,6 +41,7 @@ header:
 	cp $(AST)ast.h $(OBJ)
 	cp $(SYMTAB)symTab.h $(OBJ)
 	cp $(SYMTAB)symbol.h $(OBJ)
+	cp $(FLAG)flag.h $(OBJ)
 
 lexer: header
 	$(FLEX) -o $(OBJ)lex.yy.c $(LEXER)terra.l
@@ -64,8 +67,11 @@ symbol: header
 core: header
 	$(CC) -Ibuild/obj $(CCFLAG) $(SANITAZE) -c -o $(OBJ)core.o $(CORE)terra.c
 
-cc: parser lexer utils ast astHelper symTab symbol core
-	$(CC) -Ibuild/obj -w $(SANITAZE) $(OBJ)core.o $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o $(OBJ)astHelper.o $(OBJ)symbol.o $(OBJ)symTab.o  -o $(OUT)terra
+flag: header
+	$(CC) -Ibuild/obj $(CCFLAG) -c -o $(OBJ)flag.o $(FLAG)flag.c
+
+cc: flag parser lexer utils ast astHelper symTab symbol core
+	$(CC) -Ibuild/obj -w $(SANITAZE) $(OBJ)core.o $(OBJ)lex.yy.c $(OBJ)terra.tab.c $(OBJ)utils.o $(OBJ)ast.o $(OBJ)astHelper.o $(OBJ)symbol.o $(OBJ)symTab.o $(OBJ)flag.o  -o $(OUT)terra
 
 clean:
 	rm -R $(BUILD)

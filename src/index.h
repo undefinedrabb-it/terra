@@ -6,6 +6,8 @@
 #include <stdarg.h>
 #include <string.h>
 
+#include "flag.h"
+
 #include "symTab.h"
 #include "symbol.h"
 

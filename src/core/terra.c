@@ -4,7 +4,9 @@ extern FILE *yyin;
 int yylex();
 int yyparse();
 
-FILE *prepFile(char *inName)
+#define VERSION "v1.0.0"
+
+FILE *prepFile(const char *inName)
 {
     FILE *in = fopen(inName, "r");
 
@@ -35,15 +37,19 @@ FILE *prepFile(char *inName)
     return out;
 }
 
-int main()
+int main(int argc, const char **argv)
 {
-    yyin = prepFile("test/proper");
+    const char *url = "path/to/file";
+    flag_str(&url, "input", "Input file");
+    flag_parse(argc, argv, VERSION);
+
+    yyin = prepFile(url);
     symbolTable *symTab = createSymbolTable(500);
     yyparse(symTab);
 
     fclose(yyin);
 
     deleteSymbolTable(symTab);
-    
+
     return 0;
 }
